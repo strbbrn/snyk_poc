@@ -24,6 +24,7 @@ jobs:
     permissions:
       contents: read
       statuses: write
+      packages: read
     uses: ./.github/workflows/linting.yml
     secrets: inherit
 
