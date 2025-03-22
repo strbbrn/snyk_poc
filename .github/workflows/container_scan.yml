@@ -30,9 +30,11 @@ jobs:
       - name: Run Container Scan
         run: |
           snyk container test app:${{ github.sha }} --file=Dockerfile --sarif-file-output=snyk_container_sarif.json
-          jq 'walk(if type == "object" and has("security-severity") then .["security-severity"] |= if . == null or . == "undefined" then "0" else . end else . end)' snyk_container_sarif.json > tmp.json && mv tmp.json snyk_container_sarif.json
+          #jq 'walk(if type == "object" and has("security-severity") then .["security-severity"] |= if . == null or . == "undefined" then "0" else . end else . end)' snyk_container_sarif.json > tmp.json && mv tmp.json snyk_container_sarif.json
           #sed -i 's/"security-severity": undefined/"security-severity": "0"/g' snyk_container_sarif.json
           #sed -i 's/"security-severity": null/"security-severity": "0"/g' snyk_container_sarif.json
+          jq 'walk(if type == "object" and has("security-severity") then .["security-severity"] |= if . == null or . == "undefined" then 0.0 else . end else . end)' snyk_container_sarif.json > tmp.json && mv tmp.json snyk_container_sarif.json
+          grep "security-severity" snyk_container_sarif.json
         continue-on-error: true
       
       - name: Upload Snyk Container results
