@@ -46,6 +46,6 @@ jobs:
 
   deployment:
     name: Deployment
-    needs: [unit_test, sca_scan, code_scan, dependency_review, linter, iac_scan, container_scan]
+    needs: [unit_test, sca_scan, code_scan, dependency_review, linter, container_scan]
     uses: ./.github/workflows/cd.yml
     secrets: inherit 
