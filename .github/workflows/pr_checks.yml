@@ -6,7 +6,7 @@ on:
       - develop
       - main
 
-permissions: {}
+permissions: write-all
 
 jobs:
   unit_test:

@@ -4,7 +4,7 @@ on:
     branches:
       - main
       - develop
-
+permissions: write-all
 jobs:
   unit_test:
     name: Unit Test
