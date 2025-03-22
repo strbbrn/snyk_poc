@@ -1,2 +1,38 @@
 name: Build
+on:
+  push:
+    branches:
+      - main
+      - develop
 
+jobs:
+  unit_test:
+    uses: ./.github/workflows/unit_test.yml
+
+  sca_scan:
+    uses: ./.github/workflows/sca_scan.yml
+    secrets: inherit
+  
+  code_scan:
+    uses: ./.github/workflows/code_scan.yml
+    secrets: inherit
+
+  dependency_review:
+    uses: ./.github/workflows/dependency_review.yml
+
+  linter:
+    uses: ./.github/workflows/linting.yml
+    secrets: inherit
+
+  iac_scan:
+      uses: ./.github/workflows/iac_scan.yml
+      secrets: inherit
+    
+  container_scan:
+    uses: ./.github/workflows/container_scan.yml
+    secrets: inherit
+
+  deployment:
+    needs: [unit_test, sca_scan, code_scan, dependency_review, linter, iac_scan, container_scan]
+    uses: ./.github/workflows/cd.yml
+    secrets: inherit 

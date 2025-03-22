@@ -24,18 +24,19 @@ jobs:
         run: snyk auth ${{ secrets.SNYK_TOKEN }}   
 
       - name: Run SCA Scan
-        run: snyk code test --all-projects --sarif-file-output=snyk_sarif.json
+        run: snyk code test --all-projects --sarif-file-output=snyk_code_sarif.json
         continue-on-error: true
 
       - name: Upload Snyk results
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: snyk_results
-          path: snyk_sarif.json
+          name: snyk_code_results
+          path: snyk_code_sarif.json
       
       - name: Upload SARIF file
         if: always()
         uses: github/codeql-action/upload-sarif@v3
         with:
-          sarif_file: snyk_sarif.json
+          sarif_file: snyk_code_sarif.json
+          category: code-security

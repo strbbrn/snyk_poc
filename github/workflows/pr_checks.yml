@@ -4,6 +4,7 @@ on:
   pull_request:
     branches:
       - develop
+      - main
 
 permissions: {}
 
@@ -13,18 +14,26 @@ jobs:
 
   sca_scan:
     uses: ./.github/workflows/sca_scan.yml
-    secrets: inhert
+    secrets: inherit
   
   code_scan:
     uses: ./.github/workflows/code_scan.yml
-    secrets: inhert
+    secrets: inherit
+
+  iac_scan:
+    uses: ./.github/workflows/iac_scan.yml
+    secrets: inherit
+  
+  container_scan:
+    uses: ./.github/workflows/container_scan.yml
+    secrets: inherit
 
   dependency_review:
     uses: ./.github/workflows/dependency_review.yml
 
   linter:
     uses: ./.github/workflows/linting.yml
-    secrets: inhert
+    secrets: inherit
 
 
 
