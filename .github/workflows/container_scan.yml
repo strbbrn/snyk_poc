@@ -25,13 +25,13 @@ jobs:
         run: npm install snyk -g
 
       - name: Authenticate Snyk
-        run: snyk auth ${{ secrets.SNYK_TOKEN }}   
+        run: snyk auth ${{ secrets.SNYK_TOKEN }}
 
       - name: Run Container Scan
         run: |
           snyk container test app:${{ github.sha }} --file=Dockerfile --sarif-file-output=snyk_container_sarif.json
           sed -i 's/"security-severity": "undefined"/"security-severity": "0"/g' snyk_container_sarif.json
-          sed -i 's/"security-severity": "null"/"security-severity": "0"/g' snyk_container_sarif.json
+          sed -i 's/"security-severity": null/"security-severity": "0"/g' snyk_container_sarif.json
         continue-on-error: true
       
       - name: Upload Snyk Container results
