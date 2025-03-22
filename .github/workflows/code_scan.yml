@@ -24,7 +24,7 @@ jobs:
       - name: Authenticate Snyk
         run: snyk auth ${{ secrets.SNYK_TOKEN }}   
 
-      - name: Run SCA Scan
+      - name: Run Code Scan
         run: snyk code test --all-projects --sarif-file-output=snyk_code_sarif.json
         continue-on-error: true
 

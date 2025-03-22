@@ -6,7 +6,7 @@ on:
 jobs:
   run_container_scan:
     permissions: write-all
-    name: Run Code Scan
+    name: Run Container Scan
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
