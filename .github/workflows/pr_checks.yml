@@ -32,6 +32,9 @@ jobs:
     uses: ./.github/workflows/dependency_review.yml
 
   linter:
+    permissions:
+      contents: read
+      statuses: write
     uses: ./.github/workflows/linting.yml
     secrets: inherit
 
