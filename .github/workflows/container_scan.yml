@@ -1,0 +1,55 @@
+name: Container Scan
+
+on:
+  workflow_call:
+
+jobs:
+  run_container_scan:
+    permissions: write-all
+    name: Run Container Scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build Docker image
+        run: docker build -t app:${{ github.sha }} .
+
+      - name: Install Snyk CLI
+        run: npm install snyk -g
+
+      - name: Authenticate Snyk
+        run: snyk auth ${{ secrets.SNYK_TOKEN }}
+
+      - name: Run Container Scan
+        run: |
+          snyk container test app:${{ github.sha }} --file=Dockerfile --sarif-file-output=snyk_container_sarif.json
+          #jq 'walk(if type == "object" and has("security-severity") then .["security-severity"] |= if . == null or . == "undefined" then "0" else . end else . end)' snyk_container_sarif.json > tmp.json && mv tmp.json snyk_container_sarif.json
+          #sed -i 's/"security-severity": undefined/"security-severity": "0"/g' snyk_container_sarif.json
+          #sed -i 's/"security-severity": null/"security-severity": "0"/g' snyk_container_sarif.json
+          
+        continue-on-error: true
+      - name: Updating Sarif File
+        run: |
+           jq '.runs[].tool.driver.rules[] | keys' snyk_container_sarif.json
+           jq 'walk(if type == "object" and has("security-severity") then .["security-severity"] |= if . == "null" or . == "undefined" then "0.0" else . end else . end)' snyk_container_sarif.json > tmp.json && mv tmp.json snyk_container_sarif.json
+           grep "security-severity" snyk_container_sarif.json
+      - name: Upload Snyk Container results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: snyk_container_results 
+          path: snyk_container_sarif.json
+
+      - name: Upload Container SARIF file
+        if: always()
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: snyk_container_sarif.json
+          category: container-security
