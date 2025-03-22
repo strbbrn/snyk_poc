@@ -1,0 +1,30 @@
+name: Pull Request Checks
+
+on:
+  pull_request:
+    branches:
+      - develop
+
+permissions: {}
+
+jobs:
+  unit_test:
+    uses: ./.github/workflows/unit_test.yml
+
+  sca_scan:
+    uses: ./.github/workflows/sca_scan.yml
+    secrets: inhert
+  
+  code_scan:
+    uses: ./.github/workflows/code_scan.yml
+    secrets: inhert
+
+  dependency_review:
+    uses: ./.github/workflows/dependency_review.yml
+
+  linter:
+    uses: ./.github/workflows/linting.yml
+    secrets: inhert
+
+
+

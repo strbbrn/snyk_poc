@@ -1,0 +1,41 @@
+name: SCA Scan
+
+on:
+  workflow_call:
+
+jobs:
+  run_sca_scan:
+    name: Run SCA Scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Install Snyk CLI
+        run: npm install snyk -g
+
+      - name: Authenticate Snyk
+        run: snyk auth ${{ secrets.SNYK_TOKEN }}   
+
+      - name: Run SCA Scan
+        run: snyk test --all-projects --sarif-file-output=snyk_sarif.json
+        continue-on-error: true
+
+      - name: Upload Snyk results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: snyk_results
+          path: snyk_sarif.json
+      
+      - name: Upload SARIF file
+        if: always()
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: snyk_sarif.json
