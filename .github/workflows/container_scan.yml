@@ -4,7 +4,8 @@ on:
   workflow_call:
 
 jobs:
-  run_code_scan:
+  run_container_scan:
+    permissions: write-all
     name: Run Code Scan
     runs-on: ubuntu-latest
     steps:

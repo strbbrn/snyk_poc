@@ -10,28 +10,36 @@ permissions: {}
 
 jobs:
   unit_test:
+    name: Unit Test
     uses: ./.github/workflows/unit_test.yml
+    secrets: inherit
 
   sca_scan:
+    name: SCA Scan
     uses: ./.github/workflows/sca_scan.yml
     secrets: inherit
   
   code_scan:
+    name: Code Scan
     uses: ./.github/workflows/code_scan.yml
     secrets: inherit
 
   iac_scan:
+    name: IAC Scan
     uses: ./.github/workflows/iac_scan.yml
     secrets: inherit
   
   container_scan:
+    name: Container Scan
     uses: ./.github/workflows/container_scan.yml
     secrets: inherit
 
   dependency_review:
+    name: Dependency Review
     uses: ./.github/workflows/dependency_review.yml
 
   linter:
+    name: Linter
     permissions:
       contents: read
       statuses: write
