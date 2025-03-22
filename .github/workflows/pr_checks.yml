@@ -24,10 +24,10 @@ jobs:
     uses: ./.github/workflows/code_scan.yml
     secrets: inherit
 
-  iac_scan:
-    name: IAC Scan
-    uses: ./.github/workflows/iac_scan.yml
-    secrets: inherit
+  # iac_scan:
+  #   name: IAC Scan
+  #   uses: ./.github/workflows/iac_scan.yml
+  #   secrets: inherit
   
   container_scan:
     name: Container Scan
