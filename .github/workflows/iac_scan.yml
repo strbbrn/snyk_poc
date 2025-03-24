@@ -25,7 +25,7 @@ jobs:
         run: snyk auth ${{ secrets.SNYK_TOKEN }}   
 
       - name: Run SCA Scan
-        run: snyk iac test --sarif-file-output=snyk_iac_sarif.json
+        run: snyk iac test --sarif-file-output=snyk_iac_sarif.json || || echo "SNYK_FAILED=true" >> $GITHUB_ENV
         continue-on-error: true
 
       - name: Upload Snyk results
@@ -41,3 +41,7 @@ jobs:
         with:
           sarif_file: snyk_iac_sarif.json
           category: iac-security
+
+      - name: Fail if vulnerabilities were found
+        if: env.SNYK_FAILED == 'true'
+        run: exit 1

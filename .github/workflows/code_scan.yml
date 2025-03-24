@@ -25,7 +25,7 @@ jobs:
         run: snyk auth ${{ secrets.SNYK_TOKEN }}   
 
       - name: Run Code Scan
-        run: snyk code test --all-projects --sarif-file-output=snyk_code_sarif.json
+        run: snyk code test --all-projects --sarif-file-output=snyk_code_sarif.json || echo "SNYK_FAILED=true" >> $GITHUB_ENV
         continue-on-error: true
 
       - name: Upload Snyk results
@@ -41,3 +41,7 @@ jobs:
         with:
           sarif_file: snyk_code_sarif.json
           category: code-security
+
+      - name: Fail if vulnerabilities were found
+        if: env.SNYK_FAILED == 'true'
+        run: exit 1

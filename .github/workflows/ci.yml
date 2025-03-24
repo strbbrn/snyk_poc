@@ -21,10 +21,6 @@ jobs:
     uses: ./.github/workflows/code_scan.yml
     secrets: inherit
 
-  dependency_review:
-    name: Dependency Review
-    uses: ./.github/workflows/dependency_review.yml
-
   linter:
     name: Linter
     permissions:
@@ -44,8 +40,13 @@ jobs:
     uses: ./.github/workflows/container_scan.yml
     secrets: inherit
 
+  sbom:
+    name: SBOM generate
+    uses: ./.github/workflows/sbom.yml
+    secrets: inherit
+
   deployment:
     name: Deployment
-    needs: [unit_test, sca_scan, code_scan, dependency_review, linter, container_scan]
+    needs: [unit_test, sca_scan, code_scan,linter, container_scan]
     uses: ./.github/workflows/cd.yml
     secrets: inherit 
