@@ -1,0 +1,57 @@
+name: SBOM generate
+
+on:
+    workflow_call:
+
+jobs:
+    sbom:
+      name: SBOM generate
+      runs-on: ubuntu-latest
+      steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Install Node packages
+        run: npm install 
+
+    #   - name: Install Latest Bomber
+    #     run: |
+    #       wget https://github.com/devops-kung-fu/bomber/releases/download/v0.5.1/bomber_0.5.1_linux_amd64.deb
+    #       sudo dpkg -i bomber_0.5.1_linux_amd64.deb
+          
+     # - name: Create SBOM with CycloneDX
+     #   uses: CycloneDX/gh-node-module-generatebom@v1
+      #  with: 
+      #    output: './mysbom.json'
+      
+      - name: Snyk installation 
+        run: |
+          npm install -g snyk
+          snyk auth ${{ secrets.SNYK_TOKEN }}
+          
+      - name: Sbom with Snyk Cyclonedx Format
+        run: |
+          snyk sbom --format=cyclonedx1.4+json --json-file-output=sbom_snyk.json
+          
+      # - name: Sbom with Snyk Spdx Format
+      #   run: |
+      #     snyk sbom --format=spdx2.3+json --org=726103fc-83a2-455e-be8f-da5164cd7fc8 --json-file-output=mysbomspdx.json
+
+      - name: Upload SBOM as Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: sbom-cyclonedx
+          path: sbom_snyk.json
+          
+      # - name: Upload SBOM as Artifact spdx
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: sbom-spdx
+      #     path: mysbomspdx.json
+
+      # - name: Verify SBOM File
+      #   run: ls -la
+          
+      # - name: Scan SBOM with Snyk
+      #   run: |
+      #     snyk sbom test --file=mysbom.json --experimental

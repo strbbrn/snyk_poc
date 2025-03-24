@@ -47,5 +47,10 @@ jobs:
     uses: ./.github/workflows/linting.yml
     secrets: inherit
 
+  sbom:
+    name: SBOM generate
+    uses: ./.github/workflows/sbom.yml
+    secrets: inherit
+
 
 
